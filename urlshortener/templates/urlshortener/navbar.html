@@ -1,0 +1,8 @@
+{% comment %} {% if request.user.is_authenticated %}
+<p>Hello {{ request.user}}</p>
+<a href="{% url 'shortener:logout' %}">Logout</a>
+{% else %}
+<a href="{% url 'shortener:login' %}">Login</a>
+{% endif %}
+
+<hr> {% endcomment %}
