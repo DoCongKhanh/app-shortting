@@ -68,15 +68,16 @@ def home_view(request):
         browser = browser_user_agent.browser.family   
         # get id address of client
         hostname = socket.gethostname()
-        print('hostname:',hostname)      
+        # print('hostname:',hostname)      
         user_ip_address = socket.gethostbyname(hostname)
-        print('user_ip_address:',user_ip_address)
+        # print('user_ip_address:',user_ip_address)
         list_browsers = UserAgent.objects.filter(browser=browser,
-                                                operating_system=operating_system,
-                                                operating_version_string=operating_version_string,
-                                                user_ip_address=user_ip_address) # [Limited1, Limited2] 
+                                                    operating_system=operating_system,
+                                                    operating_version_string=operating_version_string,
+                                                    user_ip_address=user_ip_address) # [Limited1, Limited2] 
+        
         # print('list_browsers', list_browsers)          
-        if list_browsers.exists():              
+        if list_browsers.exists():             
             browser_instance = list_browsers[0]       # == list_browsers.first()   lấy value đầu tiên
             # print('browser_instance', browser_instance)
             operating_systems = browser_instance.operating_system
@@ -110,7 +111,9 @@ def home_view(request):
         else:
             browser_instance = UserAgent.objects.create(browser=browser,
                                                           operating_system=operating_system,
-                                                          operating_version_string=operating_version_string)    # tạo record mới trong cột browser   
+                                                          operating_version_string=operating_version_string,
+                                                          user_ip_address=user_ip_address)    # tạo record mới trong cột browser   
+            
             used_form = ShortenerForm(request.POST) 
             if used_form.is_valid():    
                 shortened_object = used_form.save()
