@@ -37,9 +37,9 @@
       <hr>
     {% endif %}
   </div>
-
+  
   <div class="container-body__usage-history">
-    {% if history_user_used %}
+    {% if request.user.is_authenticated %}
       <h3>History</h3>
       {% for history_user_used in history_user_used %}
       <p>{{ history_user_used }}</p>

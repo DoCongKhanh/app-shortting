@@ -16,6 +16,7 @@ import socket
 # Create your views here.
 
 def login_user(request):  
+    page = 'login'
     if request.user.is_authenticated:
         return redirect('/')
     if request.method == 'POST':
@@ -57,6 +58,9 @@ def home_view(request):
     form = ShortenerForm()
     context = {'form': form}
     if request.method == 'GET':
+        if request.user.is_authenticated:
+            history_user_used = History.objects.filter(used_user=request.user)
+            context['history_user_used'] = history_user_used
         return render(request,'urlshortener/home.html', context)
     if request.method == 'POST':         
         # get browser, operating system, version of user
@@ -67,32 +71,27 @@ def home_view(request):
         browser_user_agent = parse(ua_string) 
         browser = browser_user_agent.browser.family   
         # get id address of client
-        hostname = socket.gethostname()
-        # print('hostname:',hostname)      
+        hostname = socket.gethostname()     
         user_ip_address = socket.gethostbyname(hostname)
-        # print('user_ip_address:',user_ip_address)
         list_browsers = UserAgent.objects.filter(browser=browser,
                                                     operating_system=operating_system,
                                                     operating_version_string=operating_version_string,
-                                                    user_ip_address=user_ip_address) # [Limited1, Limited2] 
-        
-        # print('list_browsers', list_browsers)          
+                                                    user_ip_address=user_ip_address) # [Limited1, Limited2]          
         if list_browsers.exists():             
-            browser_instance = list_browsers[0]       # == list_browsers.first()   lấy value đầu tiên
+            browser_instance = list_browsers[0]       # == list_browsers.first()   lấy value đầu tiên trong QuerySet
             # print('browser_instance', browser_instance)
             operating_systems = browser_instance.operating_system
             # print('operating_systems', operating_systems)
             operating_version_string = browser_instance.operating_version_string
             # print('version_strings', version_strings)
-            used_count = browser_instance.count              # Limited1.count  Lấy số lần sử dụng
+            used_count = browser_instance.count              # Lấy số lần xuất hiện của list objects bằng count
             # print('used_count', used_count)
             if used_count > 5:   
-                if request.user.is_authenticated: # xác thực user sagin'  
+                if request.user.is_authenticated:            # xác thực user đã tạo chưa 
                     used_form = ShortenerForm(request.POST) 
                     if used_form.is_valid():    
                         shortened_object = used_form.save()
                         new_url = request.build_absolute_uri('/') + shortened_object.short_url 
-                        # print('new_url:', new_url)
                         long_url = shortened_object.long_url 
                         context['new_url'] = new_url
                         context['long_url'] = long_url  
@@ -112,8 +111,7 @@ def home_view(request):
             browser_instance = UserAgent.objects.create(browser=browser,
                                                           operating_system=operating_system,
                                                           operating_version_string=operating_version_string,
-                                                          user_ip_address=user_ip_address)    # tạo record mới trong cột browser   
-            
+                                                          user_ip_address=user_ip_address)    # tạo record mới trong các cột attributes
             used_form = ShortenerForm(request.POST) 
             if used_form.is_valid():    
                 shortened_object = used_form.save()
