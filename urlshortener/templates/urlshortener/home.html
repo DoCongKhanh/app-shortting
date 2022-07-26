@@ -25,7 +25,6 @@
       </div>
     </div>
   <hr>
-  
   <div class="container-body__url-shortener">
     {% if new_url %}
       <h2>Your shortened Url</h2>
@@ -37,7 +36,6 @@
       <hr>
     {% endif %}
   </div>
-  
   <div class="container-body__usage-history">
     {% if request.user.is_authenticated %}
       <h3>History</h3>
@@ -46,7 +44,6 @@
       {% endfor %}
     {% endif %}
   </div>
-
 </div>
 {% endblock body %}
 

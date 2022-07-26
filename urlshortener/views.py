@@ -6,7 +6,7 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-# tự  tạo from register
+# create from register
 from django.contrib.auth.forms import UserCreationForm  
 from django_user_agents.utils import get_user_agent
 from user_agents import parse
@@ -16,7 +16,6 @@ import socket
 # Create your views here.
 
 def login_user(request):  
-    page = 'login'
     if request.user.is_authenticated:
         return redirect('/')
     if request.method == 'POST':
@@ -77,8 +76,8 @@ def home_view(request):
                                                     operating_system=operating_system,
                                                     operating_version_string=operating_version_string,
                                                     user_ip_address=user_ip_address) # [Limited1, Limited2]          
-        if list_browsers.exists():             
-            browser_instance = list_browsers[0]       # == list_browsers.first()   lấy value đầu tiên trong QuerySet
+        if list_browsers.exists():           
+            browser_instance = list_browsers[0]       # == list_browsers.first()   get value first in QuerySet
             # print('browser_instance', browser_instance)
             operating_systems = browser_instance.operating_system
             # print('operating_systems', operating_systems)
@@ -101,7 +100,7 @@ def home_view(request):
                     history_user_used = History.objects.filter(used_user=request.user)    
                     context['history_user_used'] = history_user_used
                     return render(request,'urlshortener/home.html', context)
-                messages.error(request, 'You must be logged in to use') 
+                messages.error(request,'You have used up all 5 free spins. You must be logged in to use') 
                 return redirect('login/')     
             else:
                 browser_instance.count += 1
