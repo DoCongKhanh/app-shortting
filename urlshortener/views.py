@@ -99,16 +99,15 @@ def home_view(request):
                         context['new_url'] = new_url
                         context['long_url'] = long_url  
                         #  ko tạo history_record được, nếu còn sử dụng tiếp thì tạo biến\
-                        History.objects.create(used_user=request.user,
+                        History.objects.create(used_user=request.user,                                           
                                                 used_short_url=new_url)
-                        history_user_used = History.objects.filter(used_user=request.user)    
+                        history_user_used = History.objects.filter(used_user=request.user)
+                                                 
                         context['history_user_used'] = history_user_used
                         return render(request,'urlshortener/home.html', context)
                 messages.error(request,'You have used up all 5 free spins. You must be logged in to use') 
                 return redirect('login/')     
-            else:
-                browser_instance.count += 1
-                browser_instance.save()
+            else:      
                 used_form = ShortenerForm(request.POST) 
                 if used_form.is_valid():    
                     shortened_object = used_form.save()
@@ -116,19 +115,32 @@ def home_view(request):
                     long_url = shortened_object.long_url 
                     context['new_url'] = new_url
                     context['long_url'] = long_url
+                    
+                    History.objects.create(used_short_url=new_url,
+                                           ip_address=user_ip_address)
+                    history_user_used = History.objects.filter(ip_address=user_ip_address)
+                    context['history_user_used'] = history_user_used
+                browser_instance.count += 1
+                browser_instance.save()
                 return render(request,'urlshortener/home.html',context)
         else:
             browser_instance = UserAgent.objects.create(browser=browser,
                                                         operating_system=operating_system,
                                                         operating_version_string=operating_version_string,
-                                                        user_ip_address=user_ip_address)    # tạo record mới trong các cột attributes
+                                                        user_ip_address=user_ip_address)    # tạo record mới trong các cột attributes          
             used_form = ShortenerForm(request.POST) 
             if used_form.is_valid():    
                 shortened_object = used_form.save()
                 new_url = request.build_absolute_uri('/') + shortened_object.short_url 
                 long_url = shortened_object.long_url 
                 context['new_url'] = new_url
-                context['long_url'] = long_url  
+                context['long_url'] = long_url 
+                History.objects.create(used_short_url=new_url,
+                                       ip_address=user_ip_address)
+                history_user_used = History.objects.filter(ip_address=user_ip_address)
+                context['history_user_used'] = history_user_used
+            browser_instance.count += 1
+            browser_instance.save()    
             context['errors'] = used_form.errors
             return render(request, 'urlshortener/home.html', context)
 

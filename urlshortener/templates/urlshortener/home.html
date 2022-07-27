@@ -37,10 +37,10 @@
     {% endif %}
   </div>
   <div class="container-body__usage-history">
-    {% if request.user.is_authenticated %}
+    {% if history_user_used %}
       <h3>History</h3>
-      {% for history_user_used in history_user_used %}
-      <p>{{ history_user_used }}</p>
+      {% for history_user_useds in history_user_used %}
+      <p>{{ history_user_useds }}</p>
       {% endfor %}
     {% endif %}
   </div>

@@ -28,12 +28,13 @@ class UserAgent(models.Model):
     operating_system = models.CharField(max_length=50, blank=True)
     operating_version_string = models.CharField(max_length=50, blank=True)
     user_ip_address = models.CharField(max_length=50, blank=True)
-    count = models.IntegerField(default=0)
+    count = models.IntegerField(default=1)
 
     
     
 class History(models.Model):
     used_user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
+    ip_address = models.CharField(max_length=50, blank=True)
     used_short_url = models.TextField()
         
     def __str__(self):
