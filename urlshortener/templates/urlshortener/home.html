@@ -15,11 +15,11 @@
 </style>
 
 <div class="container-body">
-  <h1>Django Url shortener</h1>
+  <h1>URL SHORTENER</h1>
   <form action="" method="POST">
     {% csrf_token %}
     <div class="row g-1">
-      <div class="col-10">{{form.long_url}}</div>
+      <div class="col-10">{{form.original_url}}</div>
       <div class="col-2">
         <button class="btn btn-success btn-lg w-100" type="submit">Shorten</button>
       </div>
@@ -27,73 +27,26 @@
   <hr>
   <div class="container-body__url-shortener">
     {% if new_url %}
-      <h2>Your shortened Url</h2>
-      <p>You can copy the Link below and share it with your friends</p>
-      <p>New Shortened_URL: 
+      <h2>YOUR SHOTRENED URL</h2>
+      <p>You can copy the link below and share it with your friends</p>
+      <p>NEW SHORTENED URL: 
         <a href="{{ new_url }}">{{ new_url }}</a>
       </p>
-      <p>Previous URL: {{ long_url }}</p>
+      <p>ORIGIN URL: {{ original_url }}</p>
       <hr>
     {% endif %}
   </div>
   <div class="container-body__usage-history">
-    {% if history_user_used %}
+    {% if request.user.is_authenticated %}
       <h3>History</h3>
-      {% for history_user_useds in history_user_used %}
-      <p>{{ history_user_useds }}</p>
+      {% for shortend_url_instances in shortend_url_instance %}
+      <p>{{ shortend_url_instances.shortend_url }}</p>
+      <p>Count Onclick: {{ shortend_url_instances.shortend_url.times_followed }}</p>
       {% endfor %}
     {% endif %}
+
   </div>
 </div>
 {% endblock body %}
 
 
-
-
-
-
-
-
-
-
-{% comment %} 
-{% extends 'urlshortener/base.html' %} 
-
-{% block body %}
-
-<div class="container">
-  <div class="card mt-5">
-    <div class="card-header text-center py-3">
-      <h1>URL Shortner <i class="fas fa-link px-2"></i></h1>
-    </div>
-    <div class="px-3 py-4">
-      <form action="" method="POST">
-        {% csrf_token %}
-        <div class="row g-1">
-          <div class="col-10">{{form.long_url}}</div>
-          <div class="col-2">
-            <button class="btn btn-success btn-lg w-100" type="submit">
-              Shorten
-            </button>
-          </div>
-        </div>
-      </form>
-    </div>
-  </div>
-  {% if errors %}
-  <div class="alert alert-danger mt-4" role="alert">
-    <p>{{errors}}</p>
-  </div>
-  {% endif %}
-
-  {% if new_url %}
-
-  <div class="mx-auto text-center mt-5">
-    <h2 class="text-danger">Your shortened Url</h2>
-    <p>You can copy the Link below and share it with your friends</p>
-    <p class="">{{new_url}}</p>
-    <p><span class="text-danger">Previous URL:</span> {{long_url}}</p>
-  </div>
-  {% endif %}
-</div>
-{% endblock body %} {% endcomment %}

@@ -16,7 +16,7 @@ def create_shortened_url(model_instance):
     random_code = create_random_code()
     #  get the moddel class = class Shortener in models.py
     model_class = model_instance.__class__
-    list_short_urls =  model_class.objects.filter(short_url= random_code)
+    list_short_urls =  model_class.objects.filter(shorten_url= random_code)
     if list_short_urls.exists():
         # run the func again
         return create_shortened_url(model_instance)
