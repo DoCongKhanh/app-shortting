@@ -39,14 +39,23 @@
   <div class="container-body__usage-history">
     {% if request.user.is_authenticated %}
       <h3>History</h3>
-      {% for shortend_url_instances in shortend_url_instance %}
-      <p>{{ shortend_url_instances.shortend_url }}</p>
-      <p>Count Onclick: {{ shortend_url_instances.shortend_url.times_followed }}</p>
-      {% endfor %}
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th scope="col">URL USED</th>
+            <th scope="col">COUNT ONCLICK</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for shortend_url_instances in shortend_url_instance %}
+          <tr>
+            <td>{{ shortend_url_instances.shortend_url }}</td>
+            <td>{{ shortend_url_instances.shortend_url.times_followed }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
     {% endif %}
-
   </div>
 </div>
 {% endblock body %}
-
-

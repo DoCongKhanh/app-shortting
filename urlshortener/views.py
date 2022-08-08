@@ -107,12 +107,12 @@ def home_view(request):
                         original_url = shortened_object.original_url                        
                         context['new_url'] = new_url
                         context['original_url'] = original_url 
-                        # method filter -> get list value models ShortenURL -> get first value of list -> add models HistoryShorten(shortend_url).
+                    # method filter -> get list value models ShortenURL -> get first value of list -> create record models HistoryShorten(shortend_url).
                     list_shorten_instance = ShortenURL.objects.filter(shorten_url=shortened_object.shorten_url)  
                     shorten_instance = list_shorten_instance.first()           
                     # print('shorten_instance',shorten_instance)                                                        
-                    HistoryShorten.objects.create(shortend_url=shorten_instance,
-                                                    user=request.user)
+                    HistoryShorten.objects.create(shortend_url=shorten_instance,                # taọ record (ở khóa ngoại) để tham chiếu tới bảng chứa khóa chính để lấy objects
+                                                    user=request.user)                 
                     # Filter models HistoryShorten get all objects through the user login and print in templates
                     shortend_url_instance = HistoryShorten.objects.filter(user=request.user)                                                                                                                                                
                     context['shortend_url_instance'] = shortend_url_instance              
