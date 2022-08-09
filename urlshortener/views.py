@@ -53,14 +53,14 @@ def register_user(request):
     return render(request, 'urlshortener/register_user.html', context)
 
 
-def shorten_url_get(request):
-    used_form = ShortenURLForm(request.POST) 
-    if used_form.is_valid():  
-        shortened_object = used_form.save()
-        new_url = request.build_absolute_uri('/') + shortened_object.shorten_url 
-        original_url = shortened_object.original_url                        
-        context['new_url'] = new_url
-        context['original_url'] = original_url
+# def shorten_url_get(request):
+#     used_form = ShortenURLForm(request.POST) 
+#     if used_form.is_valid():  
+#         shortened_object = used_form.save()
+#         new_url = request.build_absolute_uri('/') + shortened_object.shorten_url 
+#         original_url = shortened_object.original_url                        
+#         context['new_url'] = new_url
+#         context['original_url'] = original_url
         
 
 
@@ -119,21 +119,40 @@ def home_view(request):
                     return render(request,'urlshortener/home.html', context)
                 messages.error(request,'You have used up all 5 free spins. You must be logged in to use') 
                 return redirect('login/')
-            else:
-                used_form = ShortenURLForm(request.POST) 
-                if used_form.is_valid():  
+            else:               
+                if request.user.is_authenticated:  
+                    used_form = ShortenURLForm(request.POST) 
+                    if used_form.is_valid():  
+                        shortened_object = used_form.save()
+                        new_url = request.build_absolute_uri('/') + shortened_object.shorten_url 
+                        original_url = shortened_object.original_url                        
+                        context['new_url'] = new_url
+                        context['original_url'] = original_url
+                    # method filter -> get list value models ShortenURL -> get first value of list -> create record models HistoryShorten(shortend_url).
+                    list_shorten_instance = ShortenURL.objects.filter(shorten_url=shortened_object.shorten_url)  
+                    shorten_instance = list_shorten_instance.first()           
+                    # print('shorten_instance',shorten_instance)                                                        
+                    HistoryShorten.objects.create(shortend_url=shorten_instance,                # taọ record (ở khóa ngoại) để tham chiếu tới bảng chứa khóa chính để lấy objects
+                                                    user=request.user)                 
+                    # Filter models HistoryShorten get all objects through the user login and print in templates
+                    shortend_url_instance = HistoryShorten.objects.filter(user=request.user)                                                                                                                                                
+                    context['shortend_url_instance'] = shortend_url_instance
+                    return render(request,'urlshortener/home.html',context)  
+                else:
+                    used_form = ShortenURLForm(request.POST)                                                    
+                    if used_form.is_valid():  
                         shortened_object = used_form.save()
                         new_url = request.build_absolute_uri('/') + shortened_object.shorten_url 
                         original_url = shortened_object.original_url 
                         context['new_url'] = new_url
                         context['original_url'] = original_url                         
-                    # History.objects.create(used_short_url=new_url,
-                    #                        ip_address=user_ip_address)              
-                    # history_user_used = History.objects.filter(ip_address=user_ip_address)
-                    # context['history_user_used'] = history_user_used
-                user_agent_first.time_used += 1
-                user_agent_first.save() 
-            return render(request,'urlshortener/home.html',context)  
+                        # History.objects.create(used_short_url=new_url,
+                        #                        ip_address=user_ip_address)              
+                        # history_user_used = History.objects.filter(ip_address=user_ip_address)
+                        # context['history_user_used'] = history_user_used
+                    user_agent_first.time_used += 1
+                    user_agent_first.save()       
+                return render(request,'urlshortener/home.html',context)  
        
         else:
             browser_instance = UserAgent.objects.create(browser=browser,
