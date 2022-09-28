@@ -76,15 +76,3 @@
 
 
 
-{% comment %} <form class="d-flex" role="search">
-        <ul class="navbar-nav mb-2 mb-md-0">
-          <li class="nav-item">
-          {% if request.user.is_authenticated %}
-            <p style="color:red;" class="nav-link active">Hello {{ request.user}}</p>
-            <a style="color:white;" class="nav-link active" aria-current="page" href="{% url 'shortener:logout' %}">Logout</a>
-          {% else %}
-            <a style="color:white;" class="nav-link active" aria-current="page" href="{% url 'shortener:login' %}">Login</a>
-          {% endif %}
-          </li>
-        </ul>
-      </form> {% endcomment %}
