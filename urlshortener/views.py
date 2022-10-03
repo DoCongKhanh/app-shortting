@@ -64,9 +64,9 @@ def register_user(request):
 #         shortened_object = used_form.save()
 #         new_url = request.build_absolute_uri('/') + shortened_object.shorten_url 
 #         original_url = shortened_object.original_url                        
-    # context['new_url'] = new_url
-    # context['original_url'] = original_url
-    # return render(request,'urlshortener/home.html', context)
+#     context['new_url'] = new_url
+#     context['original_url'] = original_url
+#     return render(request,'urlshortener/home.html', context)
 
 
 def home_view(request):     
@@ -111,6 +111,7 @@ def home_view(request):
                         original_url = shortened_object.original_url                        
                         context['new_url'] = new_url
                         context['original_url'] = original_url 
+ 
                     # method filter -> get list value models ShortenURL -> get first value of list -> create record models HistoryShorten(shortend_url).
                     list_shorten_instance = ShortenURL.objects.filter(shorten_url=shortened_object.shorten_url)  
                     shorten_instance = list_shorten_instance.first()           
